@@ -1,0 +1,56 @@
+﻿@using StateManagement.Performance.Models
+
+<div>
+    <button type="button" @onclick="SetDataInState">Set table data</button>
+    <button type="button" @onclick="FetchData">Fetch table data</button>
+    <h6>Spent time: @TimeSpan.Microseconds (ms)</h6>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Number</th>
+            <th>Company</th>
+            <th>Contact</th>
+            <th>Country</th>
+        </tr>
+        @if (Bodies != null)
+        {
+            @foreach (var item in Bodies)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Number</td>
+                    <td>@item.Company</td>
+                    <td>@item.Contact</td>
+                    <td>@item.Country</td>
+                </tr>
+            }
+        }
+    </table>
+</div>
+
+@code {
+
+    [Parameter]
+    public EventCallback OnSetDataInState { get; set; }
+    [Parameter]
+    public EventCallback OnFetchData { get; set; }
+    [Parameter]
+    public IEnumerable<BodyModel>? Bodies { get; set; }
+    [Parameter]
+    public TimeSpan TimeSpan { get; set; }
+
+    private async Task SetDataInState(MouseEventArgs e)
+    {
+        if (OnSetDataInState.HasDelegate)
+        {
+            await OnSetDataInState.InvokeAsync();
+        }
+    }
+    private async Task FetchData(MouseEventArgs e)
+    {
+        if (OnFetchData.HasDelegate)
+        {
+            await OnFetchData.InvokeAsync();
+        }
+    }
+}
