@@ -1,0 +1,40 @@
+﻿@page "/"
+
+@using StateManagement.Performance.Models
+@using StateManagement.Performance.Models.Services
+@using StateManagement.Performance.Shared
+@using StateManagement.Performance.State.States
+@using System.Diagnostics
+
+@inject ILoadDataService LoadDataService
+
+@inherits BlazorStateComponent
+
+<Content Bodies="ContentState.Bodies" TimeSpan="_timeSpan" OnSetDataInState="SetDataInState"></Content>
+
+@code {
+    ContentState ContentState => GetState<ContentState>();
+    private IEnumerable<BodyModel>? _bodies;
+    private TimeSpan _timeSpan;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        if (ContentState.Bodies == null || !ContentState.Bodies.Any())
+        {
+            _bodies = LoadDataService.LoadData();
+        }
+    }
+    private async Task SetDataInState()
+    {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+
+        await Mediator.Send(new ContentState.SetBody.Action { Bodies = _bodies });
+
+        stopwatch.Stop();
+
+        _timeSpan = stopwatch.Elapsed;
+    }
+}
