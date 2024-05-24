@@ -1,4 +1,5 @@
 # Hi everyone!
+![Preview](Images/preview.webp)
 
 Recently, one of my clients said that the application needs a code update since he wanted to implement state management. 
 
@@ -23,11 +24,12 @@ StateManagement.Performance.Models - a shared project with a service and a model
 
 StateManagement.Performance.Shared - a shared project with .razor markup.
 
+![Structure](Images/Structure.webp)
 
 
 During the download of the application, I generate 10,000 objects and fill in the list with them. Later, after clicking the "Set table data" button, the state is called in the application and the data is transferred from the state to the UI to generate the table.
 
-
+![UI](Images/UI.webp)
 
 
 ## Performance
@@ -52,25 +54,25 @@ We will be interested in fields such as StateMangement.Performance.Models.BodyMo
 
 In the picture below, you can see that the data has already been uploaded, but from the rather small size of the RenderTree, you can understand that nothing is displayed on the UI yet.
 
-
+![Blazor-State](Images/Blazor-State-1.webp)
 
 After updating the state, all 10,000 elements end up on the UI and therefore RenderTree takes up more memory.
 
-
+![Blazor-State](Images/Blazor-State-2.webp)
 
 After calling the state again, without changing the page, the page size has not changed. If there are small changes in the total volume, but we are not interested in this because the difference is very small.
 
-
+![Blazor-State](Images/Blazor-State-3.webp)
 
 The most interesting moment can be observed after changing the page. Since we are leaving the page where the table is displayed, there is no need to store all the information. As you can see in the picture, some of the necessary data gets into the pool, and our RenderTree becomes almost weightless. 
 
 Therefore, if our project has a sufficiently large amount of data that is stored and used using State Mangement, it can lead to unnecessary calls to Garbage collector, since memory from such objects can easily run out, especially if we work with Android or iOS. 
 
-
+![Blazor-State](Images/Blazor-State-4.webp)
 
 The last step is to return to the original page. Here you can notice a discrepancy between what data is now and when we left the page. Everything else remains as it was with minor changes.
 
-
+![Blazor-State](Images/Blazor-State-5.webp)
 
 ## Fluxor
 
@@ -78,26 +80,26 @@ Let's repeat the same steps with Fluxor.
 
 When you start working with Fluxor, you can observe the same effect as when working with Blazor-State, so we can just continue.
 
-
+![Fluxor](Images/Fluxor-1.webp)
 
 At the second stage, the same actions are repeated as with Blazor-State. The data gets into our table and, accordingly, the RenderTree object grows.
 
-
+![Fluxor](Images/Fluxor-2.webp)
 
 After calling and transferring objects to State again, the size of the occupied memory has not changed.
 
-
+![Fluxor](Images/Fluxor-3.webp)
 
 It seems that at the moment the amount of memory used does not differ from what it was when working with Blazor-State. However, if you turn off Just My Code and look at the total occupied memory, you can notice significant changes.
 
 
 ## Blazor-State
 
-
+![Blazor-State](Images/Fluxor-4.webp)
 
 ## Fluxor
 
-
+![Fluxor](Images/Fluxor-5.webp)
 
 It can be noted that the Fluxor application required more memory at all stages than the same application, but only with Blazor-State.
 
@@ -106,11 +108,11 @@ Since we have already covered 3 of the 5 situations when working with Fluxor, le
 
 Just as before, after changing the page, some of the data is sent to the pool and some is deleted and only what is necessary is saved. But do not forget that the volume with Just My Code will be much larger.
 
-
+![Fluxor](Images/Fluxor-6.webp)
 
 The final step is to return to the original page. We see exactly the same data as when working with Blazor-State.
 
-
+![Fluxor](Images/Fluxor-7.webp)
 
 ## Summary
 
